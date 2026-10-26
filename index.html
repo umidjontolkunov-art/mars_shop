@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mars Shop</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{
+  colors:{bg:'var(--bg)',card:'var(--card)',line:'var(--line)',ink:'var(--ink)',mute:'var(--mute)',or:'#ff6a1a',pk:'#ff3d6e',nv:'#0f1b3d'},
+  fontFamily:{sg:['Space Grotesk','sans-serif']}
+}}}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{--bg:#f3f1ee;--card:#fff;--ink:#14213d;--mute:#7a8194;--line:#e8e4de}
+body.dark{--bg:#0a0f24;--card:#141b38;--ink:#eef1ff;--mute:#8d96b8;--line:#243056}
+body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);transition:background .3s,color .3s}
+.sg{font-family:'Space Grotesk',sans-serif}
+.stars{background-image:radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 90px 80px,#fff9,transparent),radial-gradient(1.5px 1.5px at 160px 20px,#fff,transparent),radial-gradient(1px 1px at 60px 140px,#fff8,transparent);background-size:200px 170px}
+.planet{background:radial-gradient(circle at 35% 35%,#ff9a5c,#e2501a 50%,#7a1d0b);box-shadow:0 0 90px #ff6a1a88;animation:spin 40s linear infinite}
+.planet::before,.planet::after{content:"";position:absolute;border-radius:50%;background:#0003}
+.planet::before{width:20%;height:20%;left:20%;top:35%}.planet::after{width:12%;height:12%;left:58%;top:20%}
+.conf{position:fixed;top:-10px;width:9px;height:14px;z-index:80;pointer-events:none;animation:fall 1.8s ease-in forwards}
+.pop{animation:pop .2s ease-out}.shake{animation:shake .25s}.float{animation:float 2s infinite ease-in-out;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pop{0%{transform:scale(.7)}100%{transform:scale(1)}}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes float{50%{transform:translateY(-8px)}}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.6}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body class="min-h-screen transition-colors">
+
+<!-- HEADER -->
+<header class="sticky top-0 z-30 border-b border-line bg-card/80 backdrop-blur-xl">
+  <div class="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-3 px-4 py-2.5">
+    <img class="h-9 w-auto" src="./d83fda1b88a2ab3d0e79f0e439c3ecb3a9bf028e.png" alt="Mars">
+    <nav class="order-last flex w-full justify-around gap-6 md:order-none md:w-auto">
+      <a href="#" class="flex items-center gap-2 border-b-2 border-transparent py-1.5 text-sm text-mute hover:text-ink"><i class="fa-regular fa-compass"></i>Home</a>
+      <a href="#" class="flex items-center gap-2 border-b-2 border-transparent py-1.5 text-sm text-mute hover:text-ink"><i class="fa-regular fa-id-card"></i>Learning</a>
+      <a href="#" class="flex items-center gap-2 border-b-2 border-or py-1.5 text-sm font-semibold text-or"><i class="fa-solid fa-store"></i>Shop</a>
+    </nav>
+    <div class="flex items-center gap-2.5">
+      <button onclick="openM('cartModal')" aria-label="Savat" class="relative grid h-10 w-10 place-items-center rounded-full border border-line bg-card transition hover:-translate-y-0.5 hover:border-or">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span id="cartCount" class="absolute -right-1 -top-1 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-or text-[10px] font-bold text-white">0</span>
+      </button>
+      <button onclick="darkMode()" aria-label="Rejim" class="grid h-10 w-10 place-items-center rounded-full border border-line bg-card transition hover:-translate-y-0.5 hover:border-or"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+      <button class="rounded-full border-2 border-or px-3.5 py-1.5 text-[13px] font-semibold text-or">+ Post yaratish</button>
+    </div>
+  </div>
+</header>
+
+<div class="mx-auto max-w-[1200px] px-4">
+
+  <!-- HERO -->
+  <section class="relative mt-4 grid min-h-[240px] gap-5 overflow-hidden rounded-[28px] bg-[radial-gradient(circle_at_80%_30%,#ff6a1a_0,#c4310f_28%,#1a1440_62%,#0a0f24_100%)] p-5 text-white sm:p-8">
+    <div class="stars absolute inset-0 opacity-70"></div>
+    <div class="planet absolute -right-12 -top-12 h-40 w-40 rounded-full sm:-right-16 sm:-top-14 sm:h-64 sm:w-64"></div>
+    <div class="relative">
+      <h1 class="sg max-w-[520px] text-[26px] font-bold leading-tight sm:text-5xl">Bilim ol, coin top,<br>Mars Shop'dan yut!</h1>
+      <p class="mt-2 max-w-[440px] text-sm text-white/70">Testlarni yech, o'yin o'yna va yig'ilgan coinlarga o'zingga yoqqan sovg'ani ol.</p>
+      <div class="mt-4 flex flex-wrap gap-2.5">
+        <button onclick="openGame('quiz')" class="rounded-full bg-gradient-to-r from-or to-pk px-5 py-2.5 text-sm font-bold shadow-lg shadow-or/40 transition hover:-translate-y-0.5 hover:scale-105">🎮 Coin ishlash</button>
+        <button onclick="showHistory()" class="rounded-full bg-white/20 px-5 py-2.5 text-sm font-bold transition hover:bg-white/30"><i class="fa-regular fa-clock"></i> Haridlar tarixi</button>
+      </div>
+    </div>
+    <div class="relative max-w-[340px] rounded-2xl border border-white/20 bg-white/10 px-4 py-3 backdrop-blur">
+      <div class="flex justify-between text-[13px]"><b class="sg" id="lvlText">Level 1</b><span id="xpText">0 / 100 XP</span></div>
+      <div class="mt-2 h-2 overflow-hidden rounded-full bg-white/20"><i id="xpBar" class="block h-full w-0 rounded-full bg-gradient-to-r from-amber-300 to-white transition-all duration-700"></i></div>
+      <div id="rank" class="mt-1.5 text-xs text-white/70"></div>
+    </div>
+  </section>
+
+  <!-- TOOLBAR -->
+  <div class="flex flex-wrap items-center justify-between gap-3 pb-3 pt-5 sm:pt-6">
+    <h2 class="sg text-2xl font-bold"><i class="fa-solid fa-cart-shopping text-mute"></i> Magazin</h2>
+    <label class="flex h-[42px] min-w-[200px] max-w-full flex-1 items-center gap-2 rounded-2xl border border-line bg-card px-3.5 sm:max-w-[340px]">
+      <i class="fa-solid fa-magnifying-glass text-mute"></i>
+      <input id="searchInput" oninput="renderProducts()" placeholder="Mahsulot qidirish..." class="flex-1 bg-transparent text-sm outline-none">
+    </label>
+    <div class="flex items-center gap-2.5">
+      <select id="sort" onchange="renderProducts()" aria-label="Saralash" class="rounded-xl border border-line bg-card px-3 py-2.5 text-[13px]">
+        <option value="0">Saralash</option><option value="1">Arzonroq avval</option><option value="2">Qimmatroq avval</option>
+      </select>
+      <div class="flex items-center gap-1.5 rounded-2xl border border-line bg-card px-3.5 py-2.5 text-sm font-semibold">
+        <img src="./5cf9c21bc3eb624ef16ce376c54662039fb80c8d.png" class="h-5 w-5" alt=""><span id="balance">1250</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="chips" class="flex gap-2 overflow-x-auto pb-3.5 pt-1 [scrollbar-width:none]"></div>
+
+  <div id="bonusBox" class="mb-5 flex flex-wrap items-center justify-between gap-3.5 rounded-[20px] border border-dashed border-or bg-card px-5 py-4"></div>
+
+  <!-- PRODUCTS: 3 / 2 / 2 -->
+  <main>
+    <div id="products" class="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-3 lg:gap-5"></div>
+    <p id="noResult" class="hidden py-10 text-center text-sm text-mute">😕 Mahsulot topilmadi</p>
+  </main>
+</div>
+
+<footer class="mt-10 border-t border-line bg-card py-4 text-xs text-mute">
+  <div class="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-2.5 px-4">
+    <span>MARS IT School 2022</span>
+    <img src="./d83fda1b88a2ab3d0e79f0e439c3ecb3a9bf028e.png" class="w-[70px]" alt="Mars">
+    <a href="#" class="underline">Политика конфиденциальности</a>
+  </div>
+</footer>
+
+<!-- CART -->
+<div id="cartModal" onclick="if(event.target===this)closeM('cartModal')" class="modal fixed inset-0 z-50 hidden items-center justify-center bg-[#050a1c]/60 p-4 backdrop-blur-sm">
+  <div class="pop max-h-[88vh] w-full max-w-[440px] overflow-auto rounded-3xl bg-card p-5">
+    <div class="mb-4 flex items-center justify-between"><h2 class="sg text-xl font-bold">🛒 Mening savatim</h2><button onclick="closeM('cartModal')" aria-label="Yopish" class="h-[34px] w-[34px] rounded-full bg-bg"><i class="fa-solid fa-xmark"></i></button></div>
+    <div id="cartItems"></div>
+    <div class="mt-2.5 flex justify-between border-t border-line pt-3.5"><span>Jami:</span><b id="cartTotal" class="text-or">0 Coins</b></div>
+    <div class="mt-3.5 flex gap-2.5">
+      <button onclick="clearCart()" class="flex-1 rounded-full border border-line py-3 text-sm font-medium">Tozalash</button>
+      <button onclick="checkout()" class="flex-1 rounded-full bg-gradient-to-r from-or to-pk py-3 text-sm font-bold text-white">Xarid qilish</button>
+    </div>
+  </div>
+</div>
+
+<!-- HISTORY -->
+<div id="histModal" onclick="if(event.target===this)closeM('histModal')" class="modal fixed inset-0 z-50 hidden items-center justify-center bg-[#050a1c]/60 p-4 backdrop-blur-sm">
+  <div class="pop max-h-[88vh] w-full max-w-[440px] overflow-auto rounded-3xl bg-card p-5">
+    <div class="mb-4 flex items-center justify-between"><h2 class="sg text-xl font-bold">📜 Haridlar tarixi</h2><button onclick="closeM('histModal')" aria-label="Yopish" class="h-[34px] w-[34px] rounded-full bg-bg"><i class="fa-solid fa-xmark"></i></button></div>
+    <div id="histList"></div>
+  </div>
+</div>
+
+<!-- GAMES -->
+<div id="gameModal" onclick="if(event.target===this)closeGame()" class="modal fixed inset-0 z-50 hidden items-center justify-center bg-[#050a1c]/60 p-4 backdrop-blur-sm">
+  <div class="pop max-h-[90vh] w-full max-w-[460px] overflow-auto rounded-3xl bg-card p-5">
+    <div class="mb-4 flex items-center justify-between"><h2 class="sg text-xl font-bold">🎮 Coin ishlash</h2><button onclick="closeGame()" aria-label="Yopish" class="h-[34px] w-[34px] rounded-full bg-bg"><i class="fa-solid fa-xmark"></i></button></div>
+
+    <div id="tabs" class="mb-4 grid grid-cols-5 gap-1.5 text-[12px] font-semibold sm:text-[13px]">
+      <button id="tabQuiz" onclick="switchTab('quiz')">🧠 Test</button>
+      <button id="tabCatch" onclick="switchTab('catch')">🪙 Coin</button>
+      <button id="tabMemory" onclick="switchTab('memory')">🃏 Xotira</button>
+      <button id="tabMath" onclick="switchTab('math')">➕ Hisob</button>
+      <button id="tabReact" onclick="switchTab('react')">⚡ Tezlik</button>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="panelQuiz">
+      <div id="quizStart" class="py-2 text-center"><div class="float text-6xl">🧠</div><h3 class="sg text-lg font-bold">IT bilimingizni sinang!</h3><p class="mt-1.5 text-xs text-mute">5 ta savol. Har bir to'g'ri javob <b>+10 coin</b>, hammasi to'g'ri bo'lsa <b>+20 bonus</b>.</p><button onclick="startQuiz()" class="go mt-4">Boshlash</button></div>
+      <div id="quizPlay" class="hidden">
+        <div class="flex justify-between text-xs text-mute"><span id="quizNum"></span><span id="quizScoreText"></span></div>
+        <div class="my-3 h-1.5 rounded-full bg-bg"><i id="quizBar" class="block h-full w-0 rounded-full bg-or transition-all"></i></div>
+        <h3 id="quizQuestion" class="sg mb-3.5 text-[17px] font-bold"></h3>
+        <div id="quizOptions"></div>
+      </div>
+      <div id="quizEnd" class="hidden py-2 text-center"><div id="quizEmoji" class="text-6xl">🏆</div><h3 id="quizEndTitle" class="sg text-lg font-bold"></h3><p id="quizEndText" class="mt-1.5 text-xs text-mute"></p><button onclick="startQuiz()" class="go mt-4">Yana o'ynash</button></div>
+    </div>
+
+    <!-- CATCH -->
+    <div id="panelCatch" class="hidden">
+      <div id="catchStart" class="py-2 text-center"><div class="float text-6xl">🪙</div><h3 class="sg text-lg font-bold">Coinni ushla!</h3><p class="mt-1.5 text-xs text-mute">15 soniyada imkon qadar ko'p coin ushlang. Coin tobora tezlashadi!</p><button onclick="startCatch()" class="go mt-4">Boshlash</button></div>
+      <div id="catchPlay" class="hidden">
+        <div class="mb-2 flex justify-between font-bold"><span class="text-or">🪙 <span id="catchScore">0</span></span><span>⏱ <span id="catchTime">15</span>s</span></div>
+        <div id="arena" class="relative h-[280px] overflow-hidden rounded-2xl border-2 border-dashed border-line bg-bg">
+          <button id="catchCoin" onclick="hitCoin()" aria-label="Coin" class="absolute h-[52px] w-[52px]"><img src="./5cf9c21bc3eb624ef16ce376c54662039fb80c8d.png" class="h-full w-full" alt=""></button>
+        </div>
+      </div>
+      <div id="catchEnd" class="hidden py-2 text-center"><div class="text-6xl">🎉</div><h3 id="catchEndTitle" class="sg text-lg font-bold"></h3><p id="catchEndText" class="mt-1.5 text-xs text-mute"></p><button onclick="startCatch()" class="go mt-4">Yana o'ynash</button></div>
+    </div>
+
+    <!-- MEMORY -->
+    <div id="panelMemory" class="hidden">
+      <div id="memoryStart" class="py-2 text-center"><div class="float text-6xl">🃏</div><h3 class="sg text-lg font-bold">Xotira o'yini</h3><p class="mt-1.5 text-xs text-mute">Barcha juftliklarni toping. Harakat kam bo'lsa, coin ko'p (maks. <b>+50</b>).</p><button onclick="startMem()" class="go mt-4">Boshlash</button></div>
+      <div id="memoryPlay" class="hidden">
+        <div class="flex justify-between text-xs text-mute"><span>Harakat: <b id="memMoves">0</b></span><span id="memPairs">0 / 8</span></div>
+        <div id="memGrid" class="mt-2.5 grid grid-cols-4 gap-2"></div>
+      </div>
+      <div id="memoryEnd" class="hidden py-2 text-center"><div class="text-6xl">🧩</div><h3 class="sg text-lg font-bold">Barakalla!</h3><p id="memEndText" class="mt-1.5 text-xs text-mute"></p><button onclick="startMem()" class="go mt-4">Yana o'ynash</button></div>
+    </div>
+
+    <!-- MATH -->
+    <div id="panelMath" class="hidden">
+      <div id="mathStart" class="py-2 text-center"><div class="float text-6xl">➕</div><h3 class="sg text-lg font-bold">Matematika sprint</h3><p class="mt-1.5 text-xs text-mute">30 soniyada ko'proq misol yeching. To'g'ri javob <b>+2 coin</b>, xato javob <b>-2 soniya</b>.</p><button onclick="startMath()" class="go mt-4">Boshlash</button></div>
+      <div id="mathPlay" class="hidden">
+        <div class="flex justify-between font-bold"><span class="text-or">✅ <span id="mathScore">0</span></span><span>⏱ <span id="mathTime">30</span>s</span></div>
+        <h3 id="mathQ" class="sg my-6 text-center text-4xl font-bold"></h3>
+        <div id="mathOpts" class="grid grid-cols-2 gap-2"></div>
+      </div>
+      <div id="mathEnd" class="hidden py-2 text-center"><div class="text-6xl">🧮</div><h3 id="mathEndTitle" class="sg text-lg font-bold"></h3><p id="mathEndText" class="mt-1.5 text-xs text-mute"></p><button onclick="startMath()" class="go mt-4">Yana o'ynash</button></div>
+    </div>
+
+    <!-- REACTION -->
+    <div id="panelReact" class="hidden">
+      <div id="reactStart" class="py-2 text-center"><div class="float text-6xl">⚡</div><h3 class="sg text-lg font-bold">Reaksiya testi</h3><p class="mt-1.5 text-xs text-mute">Qizil rang yashilga o'zgarganda tez bosing. 3 raund, maks. <b>+40 coin</b>.</p><button onclick="startReact()" class="go mt-4">Boshlash</button></div>
+      <div id="reactPlay" class="hidden">
+        <p id="reactInfo" class="text-center text-xs text-mute"></p>
+        <button id="reactBox" onclick="reactTap()" class="mt-2 grid h-[220px] w-full place-items-center rounded-3xl bg-red-500 p-2.5 text-center text-xl font-bold text-white transition-colors"></button>
+      </div>
+      <div id="reactEnd" class="hidden py-2 text-center"><div class="text-6xl">🏎️</div><h3 id="reactEndTitle" class="sg text-lg font-bold"></h3><p id="reactEndText" class="mt-1.5 text-xs text-mute"></p><button onclick="startReact()" class="go mt-4">Yana o'ynash</button></div>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="fixed bottom-7 left-1/2 z-[70] hidden max-w-[90vw] -translate-x-1/2 rounded-full border border-white/10 bg-nv px-5 py-2.5 text-center text-[13px] text-white shadow-2xl"></div>
+
+<script>
+/* ============ DATA ============ */
+const products=[
+{id:1,name:"Mars rug",price:100,stock:24,cat:"Aksessuar",img:"./74122d6986cd45f0d51b074676d066807d20b935.png"},
+{id:2,name:"Keyboard sticker",price:49,stock:11,cat:"Aksessuar",img:"./20ad8895f14f4a3b2ef02969f1997201dcb338eb.png"},
+{id:3,name:"Smart watch",price:899,stock:4,cat:"Gadjet",img:"./6e0173c5d9559ff0dc1cabdfa97ba8c099f6b7e9.png"},
+{id:4,name:"Wireless keyboard",price:350,stock:0,cat:"Kompyuter",img:"./35edfb593ad471e2af62632a86382bcc0af3a310.png"},
+{id:5,name:"Mouse",price:359,stock:24,cat:"Kompyuter",img:"./109a9ce1b6f596be6694be05628bd33917016213.png"},
+{id:6,name:"AirPods",price:499,stock:11,cat:"Gadjet",img:"./ef8ee3c1b8e9917c769995b9a441b32310b616d6.png"},
+{id:7,name:"Powerbank",price:899,stock:5,cat:"Gadjet",img:"./775df43258986ff0881cb38a44c79b303ef23bd1.png"},
+{id:8,name:"USB flash drive",price:299,stock:21,cat:"Kompyuter",img:"./513f6e2273d6cbd114d4ebdc3f775e9d6c70e306.png"},
+{id:9,name:"Smartphone",price:3699,stock:2,cat:"Gadjet",img:"./604270bde69f9ead213f215aa27288c84f685a9b.png"},
+{id:10,name:"Playstation 5",price:7449,stock:0,cat:"Uy va o'yin",img:"./1f75caba2bee4f9f7465c181e6be84d0ad1ad887.png",preorder:true},
+{id:11,name:"Yandex Station",price:1999,stock:4,cat:"Uy va o'yin",img:"./8cd074fde2e18026efcbc2a713215372f924fb98.png"},
+{id:12,name:"Planshet Samsung",price:4999,stock:24,cat:"Gadjet",img:"./cbacb468a24da797f3d9c552647c04e5b03f6c53.png"}
+];
+const COIN="./5cf9c21bc3eb624ef16ce376c54662039fb80c8d.png";
+const $=id=>document.getElementById(id);
+const cats=["Hammasi","Gadjet","Kompyuter","Aksessuar","Uy va o'yin","❤ Sevimlilar"];
+const OPT="mb-2 block w-full rounded-xl border-2 border-line bg-card px-3.5 py-3 text-left text-sm font-medium transition hover:border-or";
+const GO="rounded-full bg-gradient-to-r from-or to-pk px-7 py-2.5 font-bold text-white shadow-lg shadow-or/40 transition hover:scale-105";
+let balance=1250,xp=0,cart=[],selectedId=null,orders=[],likes=[],cat="Hammasi",dark=false;
+const load=(k,d)=>{try{const v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}};
+const save=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+balance=load("marsBalance",1250);xp=load("marsXP",0);orders=load("marsHistory",[]);likes=load("marsLikes",[]);dark=load("marsDark",false);
+document.querySelectorAll(".go").forEach(b=>b.className+=" "+GO);
+
+/* ============ HELPERS ============ */
+function showToast(t){const e=$("toast");e.innerText=t;e.classList.remove("hidden");clearTimeout(showToast.t);showToast.t=setTimeout(()=>e.classList.add("hidden"),2200)}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function openM(id){$(id).classList.remove("hidden");$(id).classList.add("flex")}
+function closeM(id){$(id).classList.add("hidden");$(id).classList.remove("flex")}
+function show(id,v){$(id).classList.toggle("hidden",!v)}
+function confetti(){const c=["#ff6a1a","#ff3d6e","#ffd166","#22c55e","#38bdf8"];for(let i=0;i<46;i++){const e=document.createElement("i");e.className="conf";e.style.left=Math.random()*100+"vw";e.style.background=c[i%5];e.style.animationDelay=Math.random()*.4+"s";e.style.animationDuration=1.4+Math.random()+"s";document.body.appendChild(e);setTimeout(()=>e.remove(),2800)}}
+
+/* ============ ECONOMY / LEVEL ============ */
+function addCoins(n){balance+=n;xp+=n;save("marsBalance",balance);save("marsXP",xp);updateCart();updateLevel()}
+function updateLevel(){
+  const lv=Math.floor(xp/100)+1,cur=xp%100;
+  const ranks=["Yangi astronavt 🧑‍🚀","Kosmik kadet 🚀","Mars kashfiyotchisi 🔭","Galaktika dasturchisi 💻","Mars qo'mondoni 👑"];
+  $("lvlText").innerText="Level "+lv;$("xpText").innerText=cur+" / 100 XP";
+  $("xpBar").style.width=cur+"%";$("rank").innerText=ranks[Math.min(lv-1,4)];
+}
+
+/* ============ PRODUCTS ============ */
+const inCart=id=>cart.filter(x=>x===id).length;
+const leftStock=p=>p.stock-inCart(p.id);
+const cartTotalValue=()=>cart.reduce((s,id)=>s+products.find(x=>x.id===id).price,0);
+function renderChips(){
+  $("chips").innerHTML=cats.map(c=>`<button onclick="setCat('${c.replace("'","\\'")}')" class="whitespace-nowrap rounded-full border px-4 py-2 text-[13px] font-medium transition ${c===cat?"border-nv bg-nv text-white dark:border-or dark:bg-or":"border-line bg-card"}">${c}</button>`).join("");
+}
+function setCat(c){cat=c;renderChips();renderProducts()}
+function renderProducts(){
+  const q=$("searchInput").value.toLowerCase().trim(),s=$("sort").value;
+  let list=products.filter(p=>p.name.toLowerCase().includes(q)&&(cat==="Hammasi"||(cat[0]==="❤"?likes.includes(p.id):p.cat===cat)));
+  if(s==="1")list.sort((a,b)=>a.price-b.price);if(s==="2")list.sort((a,b)=>b.price-a.price);
+  const T="absolute left-0 top-0 rounded-full px-2 py-0.5 text-[9px] font-bold text-white sm:px-2.5 sm:text-[10px] ";
+  $("products").innerHTML=list.map(p=>{
+    const left=leftStock(p),out=left<=0&&!p.preorder,added=inCart(p.id)>0;
+    const tag=out?`<span class="${T}bg-gray-500">Tugagan</span>`:p.preorder&&left<=0?`<span class="${T}bg-violet-600">Pre-order</span>`:left<=4?`<span class="${T}bg-rose-600">Oxirgi ${left} ta!</span>`:p.price>=3000?`<span class="${T}bg-or">Premium</span>`:"";
+    const pct=Math.max(4,Math.min(100,100-(left/24)*100));
+    return `<div onclick="selectCard(${p.id})" class="group relative flex cursor-pointer flex-col gap-1.5 rounded-[18px] border bg-card p-2.5 transition duration-200 hover:-translate-y-1.5 hover:border-or hover:shadow-xl sm:gap-2 sm:rounded-[22px] sm:p-3.5 ${selectedId===p.id?"border-or ring-4 ring-or/20":"border-line"}">
+      <div class="relative grid h-[100px] place-items-center rounded-2xl bg-[radial-gradient(circle_at_50%_60%,rgba(255,106,26,.12),transparent_70%)] sm:h-[130px] lg:h-[150px]">
+        ${tag}
+        <img src="${p.img}" alt="${p.name}" class="max-h-[82px] max-w-[82%] object-contain transition duration-300 group-hover:rotate-[-3deg] group-hover:scale-110 sm:max-h-[108px] lg:max-h-[125px]">
+        <button onclick="event.stopPropagation();like(${p.id})" aria-label="Sevimli" class="absolute right-0 top-0 p-1 text-base transition ${likes.includes(p.id)?"pop text-red-500":"text-line"}"><i class="fa-solid fa-heart"></i></button>
+      </div>
+      <h3 class="text-[13px] font-medium sm:text-[15px]">${p.name}</h3>
+      <div class="flex items-center gap-1.5 text-xs font-semibold sm:text-sm"><img src="${COIN}" class="h-[15px] w-[15px] sm:h-[18px] sm:w-[18px]" alt="">${p.price} Coins</div>
+      <div class="h-[5px] overflow-hidden rounded-full bg-line"><i class="block h-full rounded-full bg-gradient-to-r from-green-500 via-yellow-400 to-red-500" style="width:${pct}%;background-size:${10000/pct}% 100%"></i></div>
+      <p class="text-[10px] text-mute sm:text-[11px]">${p.preorder&&left<=0?"Oldindan buyurtma berish mumkin":left+" dona mavjud"}</p>
+      <button ${out?"disabled":""} onclick="event.stopPropagation();addToCart(${p.id})" class="mt-1 rounded-xl py-2 text-xs font-semibold transition sm:text-[13px] ${out?"cursor-not-allowed bg-line text-mute":added?"bg-green-600 text-white":"bg-nv text-white hover:bg-or dark:bg-or"}">${out?"Tugagan":added?`<i class="fa-solid fa-check"></i> Savatda (${inCart(p.id)})`:'<i class="fa-solid fa-cart-plus"></i> Savatga'}</button>
+    </div>`}).join("");
+  $("noResult").classList.toggle("hidden",list.length>0);
+}
+function selectCard(id){selectedId=id;renderProducts()}
+function like(id){const i=likes.indexOf(id);i>-1?likes.splice(i,1):likes.push(id);save("marsLikes",likes);renderProducts()}
+
+/* ============ CART ============ */
+function addToCart(id){
+  const p=products.find(x=>x.id===id);
+  if(leftStock(p)<=0&&!p.preorder)return showToast("Bu mahsulot tugagan");
+  if(cartTotalValue()+p.price>balance)return showToast("Coin yetarli emas: "+balance+" coin. Coin ishlab ko'ring 🎮");
+  cart.push(id);updateCart();renderProducts();showToast("🛒 Savatga qo'shildi!");
+}
+function updateCart(){
+  $("cartCount").innerText=cart.length;$("balance").innerText=balance;
+  $("cartItems").innerHTML=cart.length?cart.map((id,i)=>{const p=products.find(x=>x.id===id);
+    return `<div class="mb-2 flex items-center gap-3 rounded-2xl bg-bg p-2.5"><img src="${p.img}" class="h-[50px] w-[50px] object-contain" alt=""><div class="flex-1"><h3 class="text-sm font-semibold">${p.name}</h3><p class="text-xs text-or">${p.price} Coins</p></div><button onclick="removeFromCart(${i})" aria-label="O'chirish" class="p-2 text-red-400"><i class="fa-solid fa-trash"></i></button></div>`}).join(""):'<p class="py-6 text-center text-xs text-mute">Savat hozircha bo\'sh. Birorta sovg\'a tanlang 🎁</p>';
+  $("cartTotal").innerText=cartTotalValue()+" Coins";
+}
+function removeFromCart(i){cart.splice(i,1);updateCart();renderProducts()}
+function clearCart(){cart=[];updateCart();renderProducts();showToast("Savat tozalandi")}
+function checkout(){
+  if(!cart.length)return showToast("Savat bo'sh");
+  const total=cartTotalValue();if(total>balance)return showToast("Coin yetarli emas");
+  balance-=total;save("marsBalance",balance);
+  const names=[...new Set(cart.map(id=>products.find(x=>x.id===id).name))];
+  cart.forEach(id=>{const p=products.find(x=>x.id===id);if(p.stock>0)p.stock--});
+  orders.push({date:new Date().toLocaleString(),total,items:cart.length,names});save("marsHistory",orders);
+  cart=[];updateCart();renderProducts();closeM("cartModal");confetti();
+  showToast("✅ Xarid qilindi! Qolgan: "+balance+" coin");
+}
+function showHistory(){
+  $("histList").innerHTML=orders.length?orders.slice().reverse().map(o=>`<div class="mb-2 rounded-2xl bg-bg p-3"><b class="text-sm">${o.names.join(", ")}</b><p class="mt-1 text-[11px] text-mute">${o.date} · ${o.items} ta · <span class="font-semibold text-or">${o.total} coin</span></p></div>`).join(""):'<p class="py-6 text-center text-xs text-mute">📜 Hali xaridlar tarixi yo\'q</p>';
+  openM("histModal");
+}
+
+/* ============ THEME / BONUS ============ */
+function applyTheme(){document.body.classList.toggle("dark",dark);$("themeIcon").className="fa-solid "+(dark?"fa-sun":"fa-moon")}
+function darkMode(){dark=!dark;save("marsDark",dark);applyTheme()}
+function renderBonus(){
+  const got=load("marsBonus","")===new Date().toDateString();
+  $("bonusBox").innerHTML=`<div><b class="sg text-[17px]">🎁 Kunlik bonus</b><p class="mt-0.5 text-xs text-mute">${got?"Bugungi bonus olindi. Ertaga yana keling!":"Har kuni +25 coin sovg'a. Hoziroq oling!"}</p></div>
+  <button ${got?"disabled":""} onclick="dailyBonus()" class="rounded-full bg-gradient-to-r from-or to-pk px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-or/40 transition hover:scale-105 disabled:opacity-50 disabled:shadow-none disabled:hover:scale-100">${got?"Olindi ✓":"+25 coin olish"}</button>`;
+}
+function dailyBonus(){save("marsBonus",new Date().toDateString());addCoins(25);confetti();showToast("🎁 +25 coin qo'shildi!");renderBonus()}
+
+/* ============ GAME SHELL ============ */
+const GAMES=["Quiz","Catch","Memory","Math","React"];
+const TAB_ON="rounded-xl bg-or py-2.5 text-white",TAB_OFF="rounded-xl bg-bg py-2.5 text-mute";
+function openGame(t){openM("gameModal");switchTab(t)}
+function stopAll(){stopCatch();stopMath();stopReact()}
+function closeGame(){stopAll();closeM("gameModal")}
+function switchTab(t){
+  stopAll();
+  GAMES.forEach(g=>{const on=g.toLowerCase()===t;show("panel"+g,on);$("tab"+g).className=on?TAB_ON:TAB_OFF;
+    ["Start","Play","End"].forEach(s=>{const el=$(g.toLowerCase()+s);if(el)show(el.id,s==="Start"&&on)})});
+}
+
+/* ============ QUIZ ============ */
+const bank=[
+["HTML nima?","Belgilash tili","Operatsion tizim","Antivirus","Ma'lumotlar bazasi"],
+["CSS nima uchun kerak?","Sahifa dizayni uchun","Server uchun","Video montaj uchun","Internetni tezlatish uchun"],
+["JavaScript o'zgaruvchisi?","let","dec","variable","newvar"],
+["1 byte nechta bit?","8","4","16","10"],
+["Python list qaysi qavs?","[ ]","( )","{ }","< >"],
+["Developer Tools tugmasi?","F12","F5","F1","F8"],
+["HTML rasm tegi?","<img>","<image>","<picturex>","<photo>"],
+["2 + '2' natijasi?","'22'","4","NaN","Xato"],
+["Git nima?","Versiya boshqaruvi","Brauzer","Dasturlash tili","Operatsion tizim"],
+["RAM nima?","Operativ xotira","Videokarta","Protsessor","Monitor"],
+["Qaysi biri dasturlash tili?","Python","Chrome","Photoshop","Windows"],
+["CPU nima?","Markaziy protsessor","Monitor","Klaviatura","Xotira"],
+["Massiv uzunligi?",".length",".size",".count",".len"],
+["CSS fayl kengaytmasi?",".css",".html",".js",".php"],
+["JavaScript fayl kengaytmasi?",".js",".css",".java",".html"]
+].map(x=>({q:x[0],a:x.slice(1)}));
+let qList=[],qi=0,qc=0,qLock=false;
+function startQuiz(){qList=shuffle(bank).slice(0,5);qi=0;qc=0;show("quizStart",false);show("quizEnd",false);show("quizPlay",true);showQ()}
+function showQ(){
+  qLock=false;const it=qList[qi];
+  $("quizNum").innerText=(qi+1)+" / "+qList.length;$("quizScoreText").innerText="+"+qc*10+" coin";
+  $("quizBar").style.width=(qi/qList.length*100)+"%";$("quizQuestion").innerText=it.q;
+  const box=$("quizOptions");box.innerHTML="";
+  shuffle(it.a).forEach(t=>{const b=document.createElement("button");b.className=OPT;b.innerText=t;b.onclick=()=>answer(b,t,it.a[0]);box.appendChild(b)});
+}
+function answer(b,t,ok){
+  if(qLock)return;qLock=true;
+  const good="border-green-500 bg-green-500/15";
+  if(t===ok){qc++;b.className=OPT+" pop "+good}
+  else{b.className=OPT+" shake border-red-500 bg-red-500/15";[...$("quizOptions").children].forEach(x=>{if(x.innerText===ok)x.className=OPT+" "+good})}
+  $("quizScoreText").innerText="+"+qc*10+" coin";
+  setTimeout(()=>{++qi<qList.length?showQ():endQuiz()},800);
+}
+function endQuiz(){
+  let r=qc*10;if(qc===5)r+=20;addCoins(r);if(qc>=4)confetti();
+  $("quizEmoji").innerText=qc===5?"🏆":qc>=3?"🎉":"💪";
+  $("quizEndTitle").innerText=qc===5?"Ajoyib! Hammasi to'g'ri!":qc>=3?"Yaxshi natija!":"Yana urinib ko'ring!";
+  $("quizEndText").innerHTML=qc+" / 5 to'g'ri<br><b class='text-or'>+"+r+" coin</b>";
+  show("quizPlay",false);show("quizEnd",true);
+}
+
+/* ============ CATCH ============ */
+let cs=0,ct=15,cTimer=null,cMove=null,cRun=false;
+function startCatch(){
+  stopCatch();cs=0;ct=15;cRun=true;$("catchScore").innerText=0;$("catchTime").innerText=15;
+  show("catchStart",false);show("catchEnd",false);show("catchPlay",true);moveCoin();
+  cTimer=setInterval(()=>{ct--;$("catchTime").innerText=ct;if(ct<=0)endCatch()},1000);
+}
+function moveCoin(){
+  if(!cRun)return;const a=$("arena"),c=$("catchCoin");
+  c.style.left=Math.floor(Math.random()*Math.max(0,a.clientWidth-c.offsetWidth))+"px";
+  c.style.top=Math.floor(Math.random()*Math.max(0,a.clientHeight-c.offsetHeight))+"px";
+  clearTimeout(cMove);cMove=setTimeout(moveCoin,Math.max(350,1000-cs*35));
+}
+function hitCoin(){if(!cRun)return;cs++;$("catchScore").innerText=cs;const c=$("catchCoin");c.style.animation="none";void c.offsetWidth;c.style.animation="pop .18s";moveCoin()}
+function stopCatch(){cRun=false;clearInterval(cTimer);clearTimeout(cMove)}
+function endCatch(){
+  stopCatch();addCoins(cs);if(cs>=15)confetti();
+  $("catchEndTitle").innerText=cs>=15?"⚡ Juda tez!":cs>=8?"🎉 Yaxshi o'yin!":"💪 Yana urinib ko'ring!";
+  $("catchEndText").innerHTML="Siz <b>"+cs+"</b> ta coin ushladingiz<br><b class='text-or'>+"+cs+" coin</b>";
+  show("catchPlay",false);show("catchEnd",true);
+}
+
+/* ============ MEMORY ============ */
+const MC="grid aspect-square place-items-center rounded-2xl text-3xl transition ";
+let mem=[],memOpen=[],memMoves=0,memFound=0,memLock=false;
+function startMem(){
+  const em=["🚀","💻","🪐","🤖","⚡","🔥","🎮","🧠"];
+  mem=shuffle([...em,...em]);memOpen=[];memMoves=0;memFound=0;memLock=false;
+  show("memoryStart",false);show("memoryEnd",false);show("memoryPlay",true);
+  $("memMoves").innerText=0;$("memPairs").innerText="0 / 8";
+  $("memGrid").innerHTML=mem.map((e,i)=>`<button onclick="flip(${i})" aria-label="Karta" class="${MC}bg-gradient-to-br from-or to-pk">❔</button>`).join("");
+}
+function flip(i){
+  const g=$("memGrid").children,c=g[i];
+  if(memLock||memOpen.includes(i)||c.dataset.done)return;
+  c.innerText=mem[i];c.className=MC+"pop bg-bg";memOpen.push(i);
+  if(memOpen.length===2){
+    memMoves++;$("memMoves").innerText=memMoves;memLock=true;
+    const [a,b]=memOpen,A=g[a],B=g[b];
+    if(mem[a]===mem[b]){
+      [A,B].forEach(x=>{x.dataset.done=1;x.className=MC+"border-2 border-green-500 bg-green-500/15"});
+      memFound++;$("memPairs").innerText=memFound+" / 8";memOpen=[];memLock=false;
+      if(memFound===8)setTimeout(endMem,500);
+    }else setTimeout(()=>{[A,B].forEach(x=>{x.className=MC+"bg-gradient-to-br from-or to-pk";x.innerText="❔"});memOpen=[];memLock=false},700);
+  }
+}
+function endMem(){
+  const r=Math.max(10,50-(memMoves-8)*3);addCoins(r);confetti();
+  $("memEndText").innerHTML=memMoves+" ta harakatda topdingiz<br><b class='text-or'>+"+r+" coin</b>";
+  show("memoryPlay",false);show("memoryEnd",true);
+}
+
+/* ============ MATH ============ */
+let ms=0,mt=30,mTimer=null,mAns=0,mRun=false;
+function startMath(){
+  stopMath();ms=0;mt=30;mRun=true;$("mathScore").innerText=0;$("mathTime").innerText=30;
+  show("mathStart",false);show("mathEnd",false);show("mathPlay",true);nextMath();
+  mTimer=setInterval(()=>{mt--;$("mathTime").innerText=Math.max(0,mt);if(mt<=0)endMath()},1000);
+}
+function nextMath(){
+  if(!mRun)return;
+  const r=n=>Math.floor(Math.random()*n),lvl=Math.min(3,1+Math.floor(ms/5));
+  let a=r(10*lvl)+2,b=r(10*lvl)+2;const op=["+","−","×"][r(3)];
+  if(op==="×"){a=r(9)+2;b=r(9)+2}
+  mAns=op==="+"?a+b:op==="−"?a-b:a*b;
+  $("mathQ").innerText=a+" "+op+" "+b+" = ?";
+  const set=new Set([mAns]);while(set.size<4)set.add(mAns+r(11)-5);
+  const box=$("mathOpts");box.innerHTML="";
+  shuffle([...set]).forEach(v=>{const bt=document.createElement("button");bt.className=OPT+" !mb-0 text-center text-lg";bt.innerText=v;bt.onclick=()=>pickMath(v,bt);box.appendChild(bt)});
+}
+function pickMath(v,bt){
+  if(!mRun)return;
+  if(v===mAns){ms++;$("mathScore").innerText=ms;nextMath()}
+  else{bt.className+=" shake border-red-500 bg-red-500/15";mt-=2;$("mathTime").innerText=Math.max(0,mt);if(mt<=0)return endMath();setTimeout(nextMath,250)}
+}
+function stopMath(){mRun=false;clearInterval(mTimer)}
+function endMath(){
+  if(!mRun)return;stopMath();const r=ms*2;addCoins(r);if(ms>=10)confetti();
+  $("mathEndTitle").innerText=ms>=12?"🧠 Dahosiz!":ms>=6?"🎉 Zo'r natija!":"💪 Yana urinib ko'ring!";
+  $("mathEndText").innerHTML=ms+" ta to'g'ri javob<br><b class='text-or'>+"+r+" coin</b>";
+  show("mathPlay",false);show("mathEnd",true);
+}
+
+/* ============ REACTION ============ */
+let rRound=0,rTimes=[],rTimer=null,rStart=0,rState="idle";
+const RB="mt-2 grid h-[220px] w-full place-items-center rounded-3xl p-2.5 text-center text-xl font-bold text-white transition-colors ";
+function startReact(){stopReact();rRound=0;rTimes=[];show("reactStart",false);show("reactEnd",false);show("reactPlay",true);nextReact()}
+function nextReact(){
+  const b=$("reactBox");rState="wait";b.className=RB+"bg-red-500";b.innerText="Kuting... 🔴";
+  $("reactInfo").innerText="Raund "+(rRound+1)+" / 3";
+  rTimer=setTimeout(()=>{rState="go";b.className=RB+"bg-green-500";b.innerText="HOZIR BOSING! 🟢";rStart=performance.now()},1000+Math.random()*2500);
+}
+function reactTap(){
+  if(rState==="wait"){clearTimeout(rTimer);rState="idle";$("reactBox").innerText="Juda erta! Qayta urinib ko'ring 😅";rTimer=setTimeout(nextReact,1000);return}
+  if(rState!=="go")return;
+  const t=Math.round(performance.now()-rStart);rTimes.push(t);rState="idle";rRound++;
+  $("reactBox").innerText=t+" ms";
+  rTimer=setTimeout(()=>rRound>=3?endReact():nextReact(),900);
+}
+function stopReact(){clearTimeout(rTimer);rState="idle"}
+function endReact(){
+  const avg=Math.round(rTimes.reduce((a,b)=>a+b,0)/3);
+  const r=avg<300?40:avg<400?30:avg<550?20:10;addCoins(r);if(avg<400)confetti();
+  $("reactEndTitle").innerText=avg<300?"⚡ Chaqmoq tezlik!":avg<400?"🎉 Juda yaxshi!":"💪 Yaxshi, yana urinib ko'ring!";
+  $("reactEndText").innerHTML="O'rtacha: <b>"+avg+" ms</b><br><b class='text-or'>+"+r+" coin</b>";
+  show("reactPlay",false);show("reactEnd",true);
+}
+
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeGame();closeM("cartModal");closeM("histModal")}});
+
+/* ============ START ============ */
+applyTheme();updateLevel();updateCart();renderChips();renderProducts();renderBonus();
+</script>
+</body>
+</html>
